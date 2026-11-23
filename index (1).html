@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fuar Kartvizit · ASD Laminat</title>
+<meta name="theme-color" content="#1f4fd1">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fuar Kartvizit">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  /* ---- Görünüm ---- */
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #f2f0eb; color: #16181b; }
+  .ust { background: #1f4fd1; color: #fff; padding: calc(env(safe-area-inset-top) + 16px) 18px 18px; }
+  .ust b { display: block; font-size: 22px; letter-spacing: -.01em; }
+  .ust span { font-size: 14px; opacity: .85; }
+  .kutu { max-width: 520px; margin: 0 auto; padding: 18px 16px calc(env(safe-area-inset-bottom) + 30px); }
+  h2 { font-size: 15px; margin: 26px 0 8px; color: #5f646b; font-weight: 600; }
+  label { display: block; font-size: 14px; color: #5f646b; margin: 14px 0 6px; }
+  input, textarea { width: 100%; font: inherit; font-size: 16px; padding: 12px; border: 1px solid #d6d2c8; border-radius: 12px; background: #fff; color: #16181b; }
+  input:focus, textarea:focus { outline: 2px solid #1f4fd1; border-color: #1f4fd1; }
+  textarea { min-height: 84px; resize: vertical; }
+  .buton { display: block; width: 100%; margin-top: 18px; padding: 16px; border: 0; border-radius: 14px;
+           background: #1f4fd1; color: #fff; font-size: 18px; font-weight: 700; text-align: center; cursor: pointer; }
+  .buton:active { transform: scale(.98); }
+  .cek { padding: 30px 18px; font-size: 21px; display: flex; align-items: center; justify-content: center; gap: 12px;
+         box-shadow: 0 8px 22px rgba(31,79,209,.28); }
+  .cek svg { width: 30px; height: 30px; }
+  .yukle { background: #fff; color: #1f4fd1; border: 1.5px solid #1f4fd1; font-size: 16px; padding: 12px; }
+  .durum { margin-top: 14px; padding: 12px 14px; border-radius: 12px; font-size: 16px; display: none; }
+  .durum.bekle { display: block; background: #e7ecfb; color: #1f4fd1; }
+  .durum.ok { display: block; background: #e3f4e8; color: #17663a; }
+  .durum.hata { display: block; background: #fde8e6; color: #b42318; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  li { background: #fff; border: 1px solid #e0dcd3; border-radius: 12px; padding: 11px 13px; margin-bottom: 8px; font-size: 15px; }
+  li small { display: block; color: #5f646b; font-size: 13px; margin-top: 2px; }
+  li.isleniyor { color: #1f4fd1; }
+  li.hatali { color: #b42318; }
+  .ipucu { font-size: 13px; color: #5f646b; margin-top: 8px; }
+  .link { background: none; border: 0; color: #5f646b; text-decoration: underline; font-size: 14px; margin-top: 24px; padding: 8px 0; cursor: pointer; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="ust">
+  <b>Fuar Kartvizit</b>
+  <span id="kim">ASD Laminat</span>
+</div>
+
+<div class="kutu">
+
+  <!-- İLK AÇILIŞ: satışçı adını ve şifreyi bir kez girer -->
+  <div id="kurulum" hidden>
+    <label for="kSifre">Kişisel şifren</label>
+    <input id="kSifre" type="password" inputmode="numeric" autocomplete="off" placeholder="Sana verilen şifre">
+    <button class="buton" id="kBasla">Başla</button>
+    <div class="durum" id="kDurum"></div>
+  </div>
+
+  <!-- ANA EKRAN -->
+  <div id="ana" hidden>
+    <label for="fuar">Fuar</label>
+    <input id="fuar" placeholder="ör. BAU 2027">
+
+    <label for="not">Not (isteğe bağlı, fotoğraftan önce yaz)</label>
+    <textarea id="not" placeholder="ör. WC kabin, 12 mm, mat, yılda 2 konteyner, numune istedi"></textarea>
+
+    <label class="buton cek" for="foto">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      Kartvizit çek
+    </label>
+    <input type="file" id="foto" accept="image/*" capture="environment" hidden>
+
+    <div class="durum" id="durum"></div>
+
+    <h2>Son kaydedilenler</h2>
+    <ul id="liste"></ul>
+
+    <button class="buton yukle" id="yukleBtn" hidden>Uygulamayı telefona yükle</button>
+    <p class="ipucu" id="iosIpucu" hidden>iPhone'a yüklemek için: alttaki Paylaş simgesine dokun → Ana Ekrana Ekle.</p>
+
+    <div id="sifrePanel" hidden>
+      <h2>Şifremi değiştir</h2>
+      <label for="yeni1">Yeni şifre (4-6 haneli sayı)</label>
+      <input id="yeni1" type="password" inputmode="numeric" autocomplete="new-password">
+      <label for="yeni2">Yeni şifre (tekrar)</label>
+      <input id="yeni2" type="password" inputmode="numeric" autocomplete="new-password">
+      <button class="buton" id="sifreKaydet">Şifreyi kaydet</button>
+      <div class="durum" id="sDurum"></div>
+    </div>
+
+    <button class="link" id="sifreAc">Şifremi değiştir</button><br>
+    <button class="link" id="cikis" style="margin-top:4px">Kullanıcıyı değiştir</button>
+  </div>
+</div>
+
+<script>
+  // ==== AYAR: Apps Script web uygulamasının linki ====
+  const API = 'https://script.google.com/macros/s/AKfycbyU_PG8PCSXRGb1hcuyyuu05xJk2qU8xboZhdKyo3v8WxDCCfEXGlPHDtHi9rXl8ApI2g/exec';
+
+  const $ = id => document.getElementById(id);
+  const hafiza = {
+    al: k => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } },
+    yaz: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  // ---- Ekran seçimi ----
+  function ekranSec() {
+    const hazir = hafiza.al('ad') && hafiza.al('sifre');
+    $('kurulum').hidden = !!hazir;
+    $('ana').hidden = !hazir;
+    $('kim').textContent = hazir ? hafiza.al('ad') + ' · ASD Laminat' : 'ASD Laminat · ilk kullanım';
+    if (hazir) { $('fuar').value = hafiza.al('fuar'); listeCiz(); }
+  }
+
+  $('kBasla').onclick = async () => {
+    const sifre = $('kSifre').value.trim();
+    if (!sifre) { durumYaz('kDurum', 'Şifreni yaz.', 'hata'); return; }
+    $('kBasla').disabled = true;
+    durumYaz('kDurum', 'Kontrol ediliyor…', 'bekle');
+    try {
+      const cevap = await fetch(API, { method: 'POST', body: JSON.stringify({ islem: 'giris', sifre }) });
+      const r = await cevap.json();
+      if (!r.ok) throw new Error(r.hata || 'Giriş yapılamadı');
+      hafiza.yaz('ad', r.ad); hafiza.yaz('sifre', sifre);
+      $('kSifre').value = ''; $('kDurum').className = 'durum';
+      ekranSec();
+    } catch (err) {
+      durumYaz('kDurum', navigator.onLine === false ? 'İnternet bağlantısı yok' : err.message, 'hata');
+    } finally {
+      $('kBasla').disabled = false;
+    }
+  };
+  $('cikis').onclick = () => { hafiza.yaz('ad', ''); hafiza.yaz('sifre', ''); ekranSec(); };
+  $('fuar').onchange = e => hafiza.yaz('fuar', e.target.value.trim());
+
+  function durumYaz(id, metin, tur) { const el = $(id); el.textContent = metin; el.className = 'durum ' + tur; }
+
+  // ---- Son kaydedilenler (sadece bu telefonda tutulur) ----
+  function gecmis() { try { return JSON.parse(hafiza.al('gecmis') || '[]'); } catch (e) { return []; } }
+  function listeCiz() {
+    const islemde = [...document.querySelectorAll('#liste li.isleniyor, #liste li.hatali')];
+    $('liste').innerHTML = '';
+    islemde.forEach(li => $('liste').appendChild(li));
+    gecmis().forEach(k => {
+      const li = document.createElement('li');
+      li.textContent = k.firma + (k.ulke ? ' · ' + k.ulke : '');
+      const s = document.createElement('small'); s.textContent = k.saat; li.appendChild(s);
+      $('liste').appendChild(li);
+    });
+    if (!$('liste').children.length) $('liste').innerHTML = '<li class="bos"><small>Henüz kart yok.</small></li>';
+  }
+
+  // ---- Fotoğrafı küçült (hızlı gönderim için) ----
+  function kucult(dosya) {
+    return new Promise((tamam, hata) => {
+      const img = new Image();
+      img.onload = () => {
+        const oran = Math.min(1, 1600 / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * oran); c.height = Math.round(img.height * oran);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(img.src);
+        tamam(c.toDataURL('image/jpeg', 0.85).split(',')[1]);
+      };
+      img.onerror = () => hata(new Error('Fotoğraf açılamadı'));
+      img.src = URL.createObjectURL(dosya);
+    });
+  }
+
+  // ---- Fotoğraf çekilince: hemen gönder ----
+  $('foto').onchange = async e => {
+    const dosya = e.target.files[0];
+    e.target.value = '';
+    if (!dosya) return;
+
+    const not = $('not').value.trim();
+    $('not').value = '';
+    const li = document.createElement('li');
+    li.className = 'isleniyor';
+    li.textContent = 'Okunuyor…';
+    if (not) { const s = document.createElement('small'); s.textContent = not; li.appendChild(s); }
+    document.querySelector('#liste li.bos')?.remove();
+    $('liste').prepend(li);
+    durumYaz('durum', 'Kart gönderildi, okunuyor… Sıradaki kartı çekebilirsin.', 'bekle');
+
+    try {
+      const foto = await kucult(dosya);
+      const cevap = await fetch(API, {
+        method: 'POST',
+        body: JSON.stringify({ foto, not, fuar: $('fuar').value.trim(), sifre: hafiza.al('sifre') })
+      });
+      const r = await cevap.json();
+      if (!r.ok) throw new Error(r.hata || 'Bilinmeyen hata');
+
+      const kayit = { firma: r.firma, ulke: r.ulke,
+        saat: new Date().toLocaleString('tr-TR', { dateStyle: 'short', timeStyle: 'short' }) };
+      hafiza.yaz('gecmis', JSON.stringify([kayit, ...gecmis()].slice(0, 20)));
+      li.remove(); listeCiz();
+      durumYaz('durum', '✓ Kaydedildi: ' + r.firma + (r.ulke ? ' (' + r.ulke + ')' : ''), 'ok');
+      if (navigator.vibrate) navigator.vibrate(60);
+    } catch (err) {
+      const mesaj = navigator.onLine === false ? 'İnternet bağlantısı yok' : (err.message || 'Bağlantı hatası');
+      li.className = 'hatali';
+      li.textContent = 'Kaydedilemedi: ' + mesaj;
+      durumYaz('durum', 'Kaydedilemedi: ' + mesaj, 'hata');
+      if (/Şifre/.test(mesaj)) { hafiza.yaz('sifre', ''); setTimeout(ekranSec, 2500); }
+    }
+  };
+
+  // ---- Şifre değiştirme ----
+  $('sifreAc').onclick = () => {
+    const ac = $('sifrePanel').hidden;
+    $('sifrePanel').hidden = !ac;
+    $('sifreAc').textContent = ac ? 'Vazgeç' : 'Şifremi değiştir';
+    $('sDurum').className = 'durum';
+    if (ac) $('yeni1').focus();
+  };
+  $('sifreKaydet').onclick = async () => {
+    const y1 = $('yeni1').value.trim(), y2 = $('yeni2').value.trim();
+    if (!/^\d{4,6}$/.test(y1)) { durumYaz('sDurum', 'Yeni şifre 4-6 haneli bir sayı olmalı.', 'hata'); return; }
+    if (y1 !== y2) { durumYaz('sDurum', 'İki şifre aynı değil.', 'hata'); return; }
+    $('sifreKaydet').disabled = true;
+    durumYaz('sDurum', 'Kaydediliyor…', 'bekle');
+    try {
+      const cevap = await fetch(API, { method: 'POST', body: JSON.stringify({ islem: 'sifreDegistir', sifre: hafiza.al('sifre'), yeni: y1 }) });
+      const r = await cevap.json();
+      if (!r.ok) throw new Error(r.hata || 'Şifre değiştirilemedi');
+      hafiza.yaz('sifre', y1);
+      $('yeni1').value = ''; $('yeni2').value = '';
+      durumYaz('sDurum', '✓ Şifren değişti. Bundan sonra yeni şifreni kullan.', 'ok');
+      setTimeout(() => { $('sifrePanel').hidden = true; $('sifreAc').textContent = 'Şifremi değiştir'; }, 2500);
+    } catch (err) {
+      durumYaz('sDurum', navigator.onLine === false ? 'İnternet bağlantısı yok' : err.message, 'hata');
+    } finally {
+      $('sifreKaydet').disabled = false;
+    }
+  };
+
+  // ---- Telefona yükleme ----
+  let yuklemeIstegi = null;
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); yuklemeIstegi = e; $('yukleBtn').hidden = false; });
+  $('yukleBtn').onclick = async () => {
+    if (!yuklemeIstegi) return;
+    yuklemeIstegi.prompt();
+    await yuklemeIstegi.userChoice;
+    yuklemeIstegi = null; $('yukleBtn').hidden = true;
+  };
+  const iphone = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const yuklu = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (iphone && !yuklu) $('iosIpucu').hidden = false;
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+  ekranSec();
+</script>
+</body>
+</html>
