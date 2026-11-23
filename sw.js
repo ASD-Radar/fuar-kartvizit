@@ -1,7 +1,7 @@
 // Uygulamanın telefona yüklenebilmesi için gereken küçük yardımcı.
 // Uygulama dosyalarını telefonda saklar, böylece hızlı açılır.
-const SURUM = 'fuar-v1';
-const DOSYALAR = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
+const SURUM = 'fuar-v2';
+const DOSYALAR = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './logo.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(SURUM).then(c => c.addAll(DOSYALAR)));

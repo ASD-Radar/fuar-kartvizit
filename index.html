@@ -4,41 +4,44 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Fuar Kartvizit · ASD Laminat</title>
-<meta name="theme-color" content="#1f4fd1">
+<meta name="theme-color" content="#ffffff">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Fuar Kartvizit">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
   /* ---- Görünüm ---- */
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: #f2f0eb; color: #16181b; }
-  .ust { background: #1f4fd1; color: #fff; padding: calc(env(safe-area-inset-top) + 16px) 18px 18px; }
-  .ust b { display: block; font-size: 22px; letter-spacing: -.01em; }
-  .ust span { font-size: 14px; opacity: .85; }
+  .ust { background: #fff; color: #3e4e58; padding: calc(env(safe-area-inset-top) + 14px) 18px 12px;
+         border-bottom: 5px solid #f5292e; display: flex; align-items: center; gap: 14px; }
+  .ust img { height: 42px; width: auto; flex: none; }
+  .ust div { border-left: 1px solid #d6d2c8; padding-left: 14px; min-width: 0; }
+  .ust b { display: block; font-size: 18px; letter-spacing: -.01em; }
+  .ust span { display: block; font-size: 13px; color: #6b747b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .kutu { max-width: 520px; margin: 0 auto; padding: 18px 16px calc(env(safe-area-inset-bottom) + 30px); }
   h2 { font-size: 15px; margin: 26px 0 8px; color: #5f646b; font-weight: 600; }
   label { display: block; font-size: 14px; color: #5f646b; margin: 14px 0 6px; }
   input, textarea { width: 100%; font: inherit; font-size: 16px; padding: 12px; border: 1px solid #d6d2c8; border-radius: 12px; background: #fff; color: #16181b; }
-  input:focus, textarea:focus { outline: 2px solid #1f4fd1; border-color: #1f4fd1; }
+  input:focus, textarea:focus { outline: 2px solid #3e4e58; border-color: #3e4e58; }
   textarea { min-height: 84px; resize: vertical; }
   .buton { display: block; width: 100%; margin-top: 18px; padding: 16px; border: 0; border-radius: 14px;
-           background: #1f4fd1; color: #fff; font-size: 18px; font-weight: 700; text-align: center; cursor: pointer; }
+           background: #3e4e58; color: #fff; font-size: 18px; font-weight: 700; text-align: center; cursor: pointer; }
   .buton:active { transform: scale(.98); }
   .cek { padding: 30px 18px; font-size: 21px; display: flex; align-items: center; justify-content: center; gap: 12px;
-         box-shadow: 0 8px 22px rgba(31,79,209,.28); }
+         background: #f5292e; box-shadow: 0 8px 22px rgba(245,41,46,.28); }
   .cek svg { width: 30px; height: 30px; }
-  .yukle { background: #fff; color: #1f4fd1; border: 1.5px solid #1f4fd1; font-size: 16px; padding: 12px; }
+  .yukle { background: #fff; color: #3e4e58; border: 1.5px solid #3e4e58; font-size: 16px; padding: 12px; }
   .durum { margin-top: 14px; padding: 12px 14px; border-radius: 12px; font-size: 16px; display: none; }
-  .durum.bekle { display: block; background: #e7ecfb; color: #1f4fd1; }
+  .durum.bekle { display: block; background: #e6eaed; color: #3e4e58; }
   .durum.ok { display: block; background: #e3f4e8; color: #17663a; }
   .durum.hata { display: block; background: #fde8e6; color: #b42318; }
   ul { list-style: none; padding: 0; margin: 0; }
   li { background: #fff; border: 1px solid #e0dcd3; border-radius: 12px; padding: 11px 13px; margin-bottom: 8px; font-size: 15px; }
   li small { display: block; color: #5f646b; font-size: 13px; margin-top: 2px; }
-  li.isleniyor { color: #1f4fd1; }
+  li.isleniyor { color: #3e4e58; }
   li.hatali { color: #b42318; }
   .ipucu { font-size: 13px; color: #5f646b; margin-top: 8px; }
   .link { background: none; border: 0; color: #5f646b; text-decoration: underline; font-size: 14px; margin-top: 24px; padding: 8px 0; cursor: pointer; }
@@ -48,8 +51,8 @@
 <body>
 
 <div class="ust">
-  <b>Fuar Kartvizit</b>
-  <span id="kim">ASD Laminat</span>
+  <img src="logo.png" alt="ASD Laminat">
+  <div><b>Fuar Kartvizit</b><span id="kim">ASD Laminat</span></div>
 </div>
 
 <div class="kutu">
@@ -114,7 +117,7 @@
     const hazir = hafiza.al('ad') && hafiza.al('sifre');
     $('kurulum').hidden = !!hazir;
     $('ana').hidden = !hazir;
-    $('kim').textContent = hazir ? hafiza.al('ad') + ' · ASD Laminat' : 'ASD Laminat · ilk kullanım';
+    $('kim').textContent = hazir ? hafiza.al('ad') : 'İlk kullanım';
     if (hazir) { $('fuar').value = hafiza.al('fuar'); listeCiz(); }
   }
 
